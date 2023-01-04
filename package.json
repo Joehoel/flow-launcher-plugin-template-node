@@ -1,0 +1,33 @@
+{
+  "name": "flow-launcher-plugin-template-node",
+  "version": "1.0.0",
+  "description": "Flow Launcher plugin template for Node.js",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "rm -rf dist/ && tsc && pkg package.json",
+    "dev": "tsx watch src/index.ts"
+  },
+  "bin": "dist/index.js",
+  "pkg": {
+    "scripts": "dist/**/*.js",
+    "targets": [
+      "node14-linux-arm64",
+      "node14-win-x64"
+    ],
+    "assets": [
+      "assets/**/*"
+    ],
+    "outputPath": "dist/",
+    "outputName": "flow-launcher-plugin-template-node"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "pkg": "^5.8.0",
+    "tsx": "^3.12.1",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "flow-launcher-helper": "^2.1.0",
+    "open": "^8.4.0"
+  }
+}
