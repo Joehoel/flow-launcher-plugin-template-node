@@ -25,6 +25,7 @@ jobs:
             - name: Install & Package
               run: |
                 npm install
+                npm run build
                 zip -r NPMSearch-${{steps.version.outputs.prop}}.zip . -x '*.git*'
             - name: Publish
               uses: softprops/action-gh-release@v1
