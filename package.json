@@ -4,24 +4,23 @@
   "description": "Flow Launcher plugin template for Node.js",
   "main": "src/index.ts",
   "scripts": {
-    "build": "rm -rf dist/ && tsc && pkg package.json",
-    "dev": "tsx watch src/index.ts"
+    "build": "tsc && pkg package.json",
+    "dev": "nodemon --exec \"npm run build\" --watch \"src\" --ext \"ts\""
   },
   "bin": "dist/index.js",
   "pkg": {
-    "scripts": "dist/**/*.js",
     "targets": [
-      "node14-linux-arm64",
-      "node14-win-x64"
+      "node12-win-x64"
     ],
+    "scripts": "./dist/**/*.js",
     "assets": [
       "assets/**/*"
     ],
-    "outputPath": "dist/",
-    "outputName": "flow-launcher-plugin-template-node"
+    "outputPath": "dist"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
+    "nodemon": "^2.0.20",
     "pkg": "^5.8.0",
     "tsx": "^3.12.1",
     "typescript": "^4.9.4"
