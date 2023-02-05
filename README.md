@@ -29,7 +29,7 @@ To compile the code to and executable. Now **restart** Flow Launcher and the plu
 
 > **Note**
 >
-> - You **don't** need to restart Flow Launcher every time you make a change.
+> You **don't** need to restart Flow Launcher every time you make a change.
 
 ## Publishing
 
