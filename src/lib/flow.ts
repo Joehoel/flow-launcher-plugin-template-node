@@ -1,3 +1,10 @@
+import { accessSync } from "fs";
+import { join } from "path";
+import { cwd } from "process";
+import { Logger } from "winston";
+import { PLUGIN_MANIFEST } from "./constants";
+import logger from "./logger";
+
 type JSONRPCMethods =
   | "Flow.Launcher.ChangeQuery"
   | "Flow.Launcher.RestartApp"
@@ -64,6 +71,7 @@ export class Flow<TMethods, TSettings = Record<string, string>>
   private methods = {} as MethodsObj<TMethods>;
   private defaultIconPath: string | undefined;
   private readonly data: Data<TMethods, TSettings> = JSON.parse(process.argv[2]);
+  public logger: Logger;
 
   /**
    * Creates an instance of Flow.
@@ -76,6 +84,10 @@ export class Flow<TMethods, TSettings = Record<string, string>>
     this.showResult = this.showResult.bind(this);
     this.run = this.run.bind(this);
     this.on = this.on.bind(this);
+
+    this.logger = logger;
+
+    this.logger.info({ hello: "world" });
   }
 
   /**

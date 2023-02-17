@@ -1,5 +1,5 @@
 import open from "open";
-import { Flow } from "./flow-launcher-helper";
+import { Flow } from "./lib/flow";
 
 // The events are the custom events that you define in the flow.on() method.
 const events = ["search"] as const;
@@ -25,6 +25,8 @@ flow.on("query", params => {
 
 flow.on("search", params => {
   const url = params[0].toString();
+
+  flow.logger.info(params);
 
   open(url);
 });
