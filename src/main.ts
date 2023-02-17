@@ -15,7 +15,7 @@ flow.on("query", params => {
   const url = `https://www.npmjs.com/search?${qp}`;
 
   flow.showResult({
-    title: `Search NPM package: ${params}`,
+    title: `Search NPM hello3 package: ${params}`,
     subtitle: url,
     method: "search",
     params: [url],

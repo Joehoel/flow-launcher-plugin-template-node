@@ -4,9 +4,9 @@
   "Name": "Search NPM",
   "Description": "Search NPM packages",
   "Author": "Joël Kuijper",
-  "Version": "0.0.1",
-  "Language": "executable",
-  "ExecuteFileName": "./dist/flow-launcher-plugin-template-node.exe",
+  "Version": "0.0.2",
+  "Language": "TypeScript",
+  "ExecuteFileName": "./dist/main.js",
   "Website": "https://github.com/Joehoel/flow-launcher-plugin-template-node",
   "IcoPath": "./assets/npm.png"
 }
