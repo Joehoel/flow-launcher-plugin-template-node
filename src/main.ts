@@ -21,7 +21,7 @@ flow.on("query", (params) => {
 		title: `Search NPM package: ${query}`,
 		subtitle: url,
 		method: "search",
-		parameters: [url],
+		parameters: [url, "hello"],
 		dontHideAfterAction: true,
 	});
 });
