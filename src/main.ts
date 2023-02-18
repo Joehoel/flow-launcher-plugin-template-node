@@ -22,7 +22,6 @@ flow.on("query", params => {
     subtitle: url,
     method: "search",
     parameters: [url],
-    iconPath: "assets/npm.png",
     dontHideAfterAction: true,
   });
 });
