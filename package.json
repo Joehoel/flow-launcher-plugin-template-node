@@ -12,6 +12,7 @@
   "dependencies": {
     "flow-launcher-helper": "^2.1.0",
     "open": "^8.4.0",
-    "winston": "^3.8.2"
+    "winston": "^3.8.2",
+    "zod": "^3.20.6"
   }
 }

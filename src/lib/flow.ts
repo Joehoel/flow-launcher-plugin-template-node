@@ -1,4 +1,4 @@
-import { accessSync } from "fs";
+import { readFileSync } from "fs";
 import { join } from "path";
 import { cwd } from "process";
 import { Logger } from "winston";
@@ -22,7 +22,8 @@ type JSONRPCMethods =
   | "Flow.Launcher.StopLoadingBar"
   | "Flow.Launcher.ReloadAllPluginData"
   | "Flow.Launcher.CopyToClipboard"
-  | "query";
+  | "query"
+  | "context_menu";
 
 type Methods<T> = JSONRPCMethods | T;
 
@@ -49,14 +50,28 @@ interface Data<TMethods, TSettings> {
   settings: TSettings;
 }
 
+export interface PluginManifest {
+  ID: string;
+  ActionKeyword: string;
+  Name: string;
+  Description: string;
+  Author: string;
+  Version: string;
+  Language: string;
+  ExecuteFileName: string;
+  Website: string;
+  IcoPath: string;
+}
+
 export interface JSONRPCResponse<TMethods> {
   title: string;
   subtitle?: string;
   method?: Method<TMethods>;
-  params?: Parameters;
+  parameters?: Parameters;
   dontHideAfterAction?: boolean;
   iconPath?: string;
   score?: number;
+  context?: Parameters;
 }
 
 interface IFlow<TMethods, TSettings> {
@@ -65,19 +80,25 @@ interface IFlow<TMethods, TSettings> {
   showResult: (...result: JSONRPCResponse<TMethods>[]) => void;
   run: () => void;
 }
+
 export class Flow<TMethods, TSettings = Record<string, string>>
   implements IFlow<TMethods, TSettings>
 {
   private methods = {} as MethodsObj<TMethods>;
   private defaultIconPath: string | undefined;
   private readonly data: Data<TMethods, TSettings> = JSON.parse(process.argv[2]);
-  public logger: Logger;
+
+  public log: Logger;
+
+  public id = this.manifest.ID;
+  public icon = this.manifest.IcoPath;
+  public name = this.manifest.Name;
+  public description = this.manifest.Description;
+  public author = this.manifest.Author;
+  public version = this.manifest.Version;
 
   /**
    * Creates an instance of Flow.
-   *
-   * @constructor
-   * @param {?string} [defaultIconPath] Sets the default icon path to be displayed in all results.
    */
   constructor(defaultIconPath?: string) {
     this.defaultIconPath = defaultIconPath;
@@ -85,25 +106,21 @@ export class Flow<TMethods, TSettings = Record<string, string>>
     this.run = this.run.bind(this);
     this.on = this.on.bind(this);
 
-    this.logger = logger;
-
-    this.logger.info({ hello: "world" });
+    this.log = logger;
   }
 
-  /**
-   * @readonly
-   * @type {TSettings}
-   */
-  get settings() {
+  get settings(): TSettings {
     return this.data.settings;
+  }
+
+  get manifest(): PluginManifest {
+    const path = join(cwd(), PLUGIN_MANIFEST);
+    const file = readFileSync(path, "utf8");
+    return JSON.parse(file);
   }
 
   /**
    * Registers a method and the function that will run when this method is sent from Flow.
-   *
-   * @public
-   * @param {keyof MethodsObj<TMethods>} method
-   * @param {() => void} callbackFn
    */
   public on(method: keyof MethodsObj<TMethods>, callbackFn: (params: Parameters) => void) {
     this.methods[method] = callbackFn.bind(this, this.data.parameters);
@@ -111,32 +128,145 @@ export class Flow<TMethods, TSettings = Record<string, string>>
 
   /**
    * Sends the data to be displayed in Flow Launcher.
-   *
-   * @public
-   * @param {...JSONRPCResponse<TMethods>[]} resultsArray Array with all the results objects.
    */
-  public showResult(...resultsArray: JSONRPCResponse<TMethods>[]) {
-    const result = resultsArray.map(r => {
+  public showResult(...results: JSONRPCResponse<TMethods>[]) {
+    const result = results.map(r => {
       return {
         Title: r.title,
         Subtitle: r.subtitle,
         JsonRPCAction: {
           method: r.method,
-          parameters: r.params || [],
+          parameters: r.parameters || [],
           dontHideAfterAction: r.dontHideAfterAction || false,
         },
+        ContextData: r.context || [],
         IcoPath: r.iconPath || this.defaultIconPath,
-        score: r.score || 0,
+        Score: r.score || 0,
       };
     });
 
     return console.log(JSON.stringify({ result }));
   }
 
+  public changeQuery({ query, requery = false }: { query: string; requery?: boolean }) {
+    console.log(
+      JSON.stringify({
+        method: "Flow.Launcher.ChangeQuery",
+        parameters: [query, requery],
+      })
+    );
+  }
+
+  public restartApp() {
+    console.log(
+      JSON.stringify({
+        method: "Flow.Launcher.RestartApp",
+        parameters: [],
+      })
+    );
+  }
+
+  public saveAppAllSettings() {
+    console.log(
+      JSON.stringify({
+        method: "Flow.Launcher.SaveAppAllSettings",
+        parameters: [],
+      })
+    );
+  }
+
+  public checkForNewUpdate() {
+    console.log(
+      JSON.stringify({
+        method: "Flow.Launcher.CheckForNewUpdate",
+        parameters: [],
+      })
+    );
+  }
+
+  public shellRun({ command }: { command: string }) {
+    console.log(
+      JSON.stringify({
+        method: "Flow.Launcher.ShellRun",
+        parameters: [command],
+      })
+    );
+  }
+
+  public closeApp() {
+    console.log(
+      JSON.stringify({
+        method: "Flow.Launcher.CloseApp",
+        parameters: [],
+      })
+    );
+  }
+
+  public hideApp() {
+    console.log(
+      JSON.stringify({
+        method: "Flow.Launcher.HideApp",
+        parameters: [],
+      })
+    );
+  }
+
+  public showApp() {
+    console.log(
+      JSON.stringify({
+        method: "Flow.Launcher.ShowApp",
+        parameters: [],
+      })
+    );
+  }
+
+  public openSettingDialog() {
+    console.log(
+      JSON.stringify({
+        method: "Flow.Launcher.OpenSettingDialog",
+        parameters: [],
+      })
+    );
+  }
+
+  public startLoadingBar() {
+    console.log(
+      JSON.stringify({
+        method: "Flow.Launcher.StartLoadingBar",
+        parameters: [],
+      })
+    );
+  }
+
+  public stopLoadingBar() {
+    console.log(
+      JSON.stringify({
+        method: "Flow.Launcher.StopLoadingBar",
+        parameters: [],
+      })
+    );
+  }
+
+  public reloadPlugins() {
+    console.log(
+      JSON.stringify({
+        method: "Flow.Launcher.ReloadPlugins",
+        parameters: [],
+      })
+    );
+  }
+
+  public copyToClipboard({ text }: { text: string }) {
+    console.log(
+      JSON.stringify({
+        method: "Flow.Launcher.CopyToClipboard",
+        parameters: [text],
+      })
+    );
+  }
+
   /**
    * Runs the function for the current method. Should be called at the end of your script, or after all the `on()` functions have been called.
-   *
-   * @public
    */
   public run() {
     this.data.method in this.methods && this.methods[this.data.method]();
