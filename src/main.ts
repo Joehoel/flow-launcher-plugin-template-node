@@ -29,8 +29,6 @@ flow.on("query", (params) => {
 flow.on("search", (params) => {
 	const [url] = z.array(z.string().url()).parse(params);
 
-	flow.shellRun({ command: "open ." });
-
 	open(url);
 });
 
