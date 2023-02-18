@@ -3,7 +3,8 @@
   "description": "Flow Launcher plugin template for Node.js",
   "main": "./dist/main.js",
   "scripts": {
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "build": "tsc"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
