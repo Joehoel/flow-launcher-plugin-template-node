@@ -25,7 +25,7 @@ npm install
 npm run dev
 ```
 
-To compile the code to and executable. Now **restart** Flow Launcher and the plugin should be loaded.
+To compile the code and then **restart** Flow Launcher and the plugin should be loaded.
 
 > **Note**
 >
